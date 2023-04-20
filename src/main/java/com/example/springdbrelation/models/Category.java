@@ -1,6 +1,5 @@
-package com.example.springdbrelation.model;
+package com.example.springdbrelation.models;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -10,16 +9,17 @@ import lombok.NoArgsConstructor;
 @Entity
 @Data
 @NoArgsConstructor
-public class CPI {
+public class Category {
 
     @Id
     @GeneratedValue
     private long id;
 
-    @Column
-    private String creditworthiness;
+    private String name;
 
-    public CPI(String creditworthiness) {
-        this.creditworthiness = creditworthiness;
+    public Category(String name) {
+        this.name = name;
     }
+
+
 }

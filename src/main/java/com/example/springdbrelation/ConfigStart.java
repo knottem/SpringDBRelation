@@ -33,7 +33,7 @@ public class ConfigStart {
                 logger.info("ConfigStart: " + configStart);
                 if(configStart) {
 
-                    logger.info("Running ConfigStart, adding data to database");
+                    logger.info("Running ConfigStart: adding data");
 
                     Category categoryGold = new Category("Gold");
                     Category categorySilver = new Category("Silver");
@@ -52,7 +52,7 @@ public class ConfigStart {
                     accountRepository.save(account1);
                     accountRepository.save(account2);
                     accountRepository.save(account3);
-                    
+
                     customerRepo.save(new Customer(
                             "Harry",
                             "Potter",

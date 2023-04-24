@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@RestController
+@RestController()
 public class AccountController {
 
     private final AccountRepository accountRepo;
@@ -18,8 +18,44 @@ public class AccountController {
         this.accountRepo = accountRepo;
     }
 
-    @RequestMapping("/accountAll")
+    @RequestMapping({"/accountAll", "/account"})
     private List<Account> getAccounts() {
         return accountRepo.findAll();
     }
+
+    @RequestMapping("/accountNew/{balance}/{rate}")
+    private Account addNewAccount(@PathVariable double balance,
+                                  @PathVariable double rate) {
+        Account account = new Account(balance, rate);
+        accountRepo.save(account);
+        return account;
+    }
+
+    @RequestMapping("/account/{id}")
+    private Account getAccountById(@PathVariable long id) {
+        return accountRepo.findById(id).isPresent() ? accountRepo.findById(id).get() : null;
+    }
+
+    @RequestMapping("/account/{id}/changeBalance/{balance}")
+    private Account getAccountCustomer(@PathVariable long id,
+                                        @PathVariable double balance) {
+        Account account = accountRepo.findById(id).isPresent() ? accountRepo.findById(id).get() : null;
+        if (account != null) {
+            account.setBalance(balance);
+            accountRepo.save(account);
+        }
+        return account;
+    }
+
+    @RequestMapping("/accounts/{id}/changeRate/{rate}")
+    private Account getAccountRate(@PathVariable long id,
+                                   @PathVariable double rate) {
+        Account account = accountRepo.findById(id).isPresent() ? accountRepo.findById(id).get() : null;
+        if (account != null) {
+            account.setInterestRate(rate);
+            accountRepo.save(account);
+        }
+        return account;
+    }
+
 }

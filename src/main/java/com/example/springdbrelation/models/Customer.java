@@ -20,11 +20,11 @@ public class Customer {
     @JoinColumn
     private CPI cpi;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn
     private Category category;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.MERGE)
     @JoinTable
     private List<Account> accounts = new ArrayList<>();
 
@@ -39,6 +39,25 @@ public class Customer {
         this.address = address;
         this.ssn = ssn;
         this.cpi = cpi;
+    }
+
+    public Customer(String firstName, String lastName, String address, String ssn, CPI cpi, Category category){
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.address = address;
+        this.ssn = ssn;
+        this.cpi = cpi;
+        this.category = category;
+    }
+
+    public Customer(String firstName, String lastName, String address, String ssn, CPI cpi, Category category, List<Account> accounts){
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.address = address;
+        this.ssn = ssn;
+        this.cpi = cpi;
+        this.category = category;
+        this.accounts = accounts;
     }
 
 }

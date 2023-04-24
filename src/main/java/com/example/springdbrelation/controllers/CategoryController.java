@@ -34,4 +34,9 @@ public class CategoryController {
         categoryRepo.save(category);
         return "New category added: " + name;
     }
+
+    @RequestMapping("/category/{name}")
+    public Category getCategoryByName(@PathVariable String name) {
+        return categoryRepo.findByName(name).isPresent() ? categoryRepo.findByName(name).get() : null;
+    }
 }

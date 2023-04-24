@@ -27,7 +27,12 @@ public class CustomerController {
         this.accountRepo = accountRepo;
     }
 
-    @RequestMapping("/customerAll")
+    @RequestMapping("/test")
+    public String test() {
+        return "test";
+    }
+
+    @RequestMapping("/customer")
     public List<Customer> getAllCustomers() {
         return customerRepo.findAll();
     }
@@ -52,6 +57,9 @@ public class CustomerController {
 
     @RequestMapping("/newCustomer2")
     public String addNewCustomer2(@RequestBody Customer customer) {
+        if(customer.getFirstName() == null || customer.getLastName()  == null || customer.getAddress() == null || customer.getSsn() == null || customer.getCpi() == null) {
+            return "Customer is null or some of the fields are null";
+        }
         customerRepo.save(customer);
         return "New customer added: " + customer.getFirstName() + " " + customer.getLastName();
     }
@@ -67,29 +75,49 @@ public class CustomerController {
                                        @PathVariable double balance) {
         Customer customer = customerRepo.findById(id).isPresent() ? customerRepo.findById(id).get() : null;
         if (customer != null) {
-            if (customer.getAccounts().stream().anyMatch(a -> a.getId() == accountId)) {
+            /*
+            if(customer.getAccounts().stream().anyMatch(a -> a.getId() == accountId)){
                 Account account = accountRepo.findById(accountId).isPresent() ? accountRepo.findById(accountId).get() : null;
-                if (account != null) {
+                if(account != null){
                     account.setBalance(balance);
                     accountRepo.save(account);
-                    return "Balance changed to " + balance;
-                } else {
-                    return "Wrong Account Id";
                 }
+            }
+             */
+            customer.getAccounts().stream().filter(a -> a.getId() == accountId).forEach(a -> a.setBalance(balance));
+            customerRepo.save(customer);
+            return "Balance changed to " + balance + " for account " + accountId + " for customer " + customer.getFirstName() + " " + customer.getLastName();
+        } else {
+            return "Wrong Customer Id";
+        }
+    }
+
+    @RequestMapping("/customer/{id}/addExistingAccount/{accountId}")
+    public String addExistingAccount(@PathVariable long id,
+                                     @PathVariable long accountId) {
+        Customer customer = customerRepo.findById(id).isPresent() ? customerRepo.findById(id).get() : null;
+        if(customer != null){
+            Account account = accountRepo.findById(accountId).isPresent() ? accountRepo.findById(accountId).get() : null;
+            if(account != null){
+                if(customer.getAccounts().stream().anyMatch(a -> a.getId() == accountId)){
+                    return "Account " + accountId + " already exists for " + customer.getFirstName() + " " + customer.getLastName();
+                }
+                customer.getAccounts().add(account);
+                customerRepo.save(customer);
+                return "Account " + accountId + " added to " + customer.getFirstName() + " " + customer.getLastName();
+            } else {
+                return "Wrong Account Id";
             }
         } else {
             return "Wrong Customer Id";
         }
-        return "bör inte komma hit";
     }
 
     @RequestMapping("/customer/{id}/addAccount")
     public String addAccountCustomer(@PathVariable long id) {
         Customer customer = customerRepo.findById(id).isPresent() ? customerRepo.findById(id).get() : null;
         if(customer != null){
-            Account account = new Account(1000, 1.5);
-            accountRepo.save(account);
-            customer.getAccounts().add(account);
+            customer.getAccounts().add(new Account(1000, 1.5));
             customerRepo.save(customer);
             return "New Account added to " + customer.getFirstName() + " " + customer.getLastName();
         } else {

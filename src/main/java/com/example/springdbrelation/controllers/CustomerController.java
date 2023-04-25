@@ -8,7 +8,6 @@ import com.example.springdbrelation.repositories.CPIRepository;
 import com.example.springdbrelation.repositories.CustomerRepository;
 import org.springframework.web.bind.annotation.*;
 
-import java.beans.Transient;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,6 +39,11 @@ public class CustomerController {
     @RequestMapping("/customer/{id}")
     public Optional<Customer> getCustomerById(@PathVariable long id){
         return customerRepo.findById(id);
+    }
+
+    @RequestMapping("/customer/firstName/{firstName}")
+    public List<Customer> getCustomerByFirstName(@PathVariable String firstName) {
+        return customerRepo.findByFirstName(firstName);
     }
 
     @RequestMapping("/newCustomer")
